@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:vm="clr-namespace:MVVM_Toolkit.ViewModels;assembly=MVVM_Toolkit"
+             xmlns:converters="clr-namespace:MVVM_Toolkit.Converters;assembly=MVVM_Toolkit"
+             xmlns:vmv="clr-namespace:LOL.VIewModels;assembly=LOL"
+             x:Class="LOL.Pages.ChampionsView"
+             Title="ChampionsView"
+             x:DataType="vmv:ChampionsViewModel">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:Base64ToImageConverter x:Key="Base64ToImageConverter"/>
+            <toolkit:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <StackLayout Orientation="Vertical"  >
+        <Grid RowDefinitions="50,*,100" VerticalOptions="FillAndExpand">
+            <HorizontalStackLayout>
+                <Label 
+                    Text="My ChampionsList"
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center" />
+                <Button 
+                    Text="Ajouter"
+                    Command="{Binding NewChampionCommand}"/>
+            </HorizontalStackLayout>
+            <ListView ItemsSource="{Binding ChampionMgrVm.Champions}" Grid.Row="1" SelectedItem="{Binding SelectedChampion}">
+                
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="{x:Type vm:ChampionVM}">
+                        <ViewCell>
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItem 
+                                        Text="Modifier" 
+                                        BackgroundColor="Gray" 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vmv:ChampionsViewModel}}, Path=EditChampionCommand}" 
+                                        CommandParameter="{Binding .}"/>
+                                    <SwipeItem Text="Supprimer" BackgroundColor="Red"/>
+                                </SwipeView.RightItems>
+                                <Grid ColumnDefinitions="50,*,20" ColumnSpacing="10">
+                                    <!--<Grid.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vmv:ChampionsViewModel}}, Path=DisplayDetailCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                    </Grid.GestureRecognizers>-->
+                                    <Image Source="{Binding Icon ,Converter={StaticResource Base64ToImageConverter}}" HeightRequest="50"/>
+                                    <StackLayout Orientation="Vertical" Grid.Column="1">
+                                        <Label Text="{Binding Name}" VerticalOptions="Center" FontAttributes="Bold"/>
+                                        <Label Text="{Binding Class}" VerticalOptions="Center" TextColor="Gray"/>
+                                    </StackLayout>
+                                </Grid>
+                            </SwipeView>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.Behaviors>
+                    <toolkit:EventToCommandBehavior
+                        x:TypeArguments="SelectedItemChangedEventArgs"
+                        EventName="ItemSelected"
+                        Command="{Binding  DisplayDetailCommand}"/>
+                </ListView.Behaviors>
+            </ListView>
+            <HorizontalStackLayout Grid.Row="2" VerticalOptions="Center" HorizontalOptions="Center">
+                <ImageButton Source="back.png" HeightRequest="20" Command="{Binding PreviousPageCommand}"/>
+                <Label Text="{Binding ChampionMgrVm.Page}" VerticalOptions="Center" HorizontalOptions="Center"/>
+                <Label Text="/" VerticalOptions="Center" HorizontalOptions="Center"/>
+                <Label Text="2" VerticalOptions="Center" HorizontalOptions="Center"/>
+                <ImageButton Source="right.png" HeightRequest="20" Command="{Binding NextPageCommand}"/>
+            </HorizontalStackLayout>
+        </Grid>
+    </StackLayout>
+</ContentPage>

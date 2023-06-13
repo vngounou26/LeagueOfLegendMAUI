@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:MVVM_Toolkit.ViewModels;assembly=MVVM_Toolkit"
+             xmlns:converters="clr-namespace:MVVM_Toolkit.Converters;assembly=MVVM_Toolkit"
+             xmlns:components="clr-namespace:LOL.Components"
+             xmlns:vmv="clr-namespace:LOL.VIewModels"
+             x:DataType="vmv:EditionViewModel"
+             Title="{Binding Title}"
+             x:Class="LOL.Pages.EditChampionView">
+    <ContentPage.Resources>
+        <DataTemplate x:Key="ClassTemplate">
+            <components:ClassView  />
+        </DataTemplate>
+        <DataTemplate x:Key="CharacteristicViewTemplate">
+            <components:CaracteristicView StackOrientation="Horizontal" KeyHorizontalAlignment="StartAndExpand" ValueHorizontalAlignment="End"/>
+        </DataTemplate>
+        <converters:Base64ToImageConverter x:Key="Base64ToImageConverter"/>
+        <converters:ClassesToImageConverter x:Key="ClassesToImageConverter"/>
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout>
+            <Label Text="{Binding Title}" FontSize="Title" HorizontalOptions="Center" FontAttributes="Bold" Margin="10"/>
+            <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                <Label Text="Nom" />
+                <Entry Text="{Binding EditableChampionVm.Name}" 
+                   IsEnabled="{Binding IsNew}"
+                   Grid.Column="1"/>
+                <Label 
+                Text="Icon" 
+                Grid.Row="1"/>
+                <ImageButton 
+                    Grid.Column="1"
+                    Grid.Row="1" 
+                    Aspect="AspectFit"
+                    Source="{Binding EditableChampionVm.Icon, Converter={StaticResource Base64ToImageConverter}}" 
+                    HeightRequest="50" HorizontalOptions="StartAndExpand" Command="{Binding PickIconCommand}"/>
+                <Label 
+                Text="Image"
+                Grid.Row="2"/>
+                <ImageButton 
+                    Grid.Column="1"
+                    Grid.Row="2" 
+                    Source="{Binding EditableChampionVm.Image, Converter={StaticResource Base64ToImageConverter}}" Command="{Binding PickImageCommand}"/>
+                <Label 
+                Text="Bio"
+                Grid.Row="3"/>
+                <Editor 
+                Text="{Binding EditableChampionVm.Bio}"
+                Grid.Column="1"
+                Grid.Row="3"/>
+                <Label Text="Class" Grid.Row="4" VerticalOptions="Center"/>
+                <CollectionView ItemsSource="{Binding Classes}"
+                                Grid.Row="4" Grid.Column="1"
+                                SelectedItem="{Binding EditableChampionVm.Class}"
+                                SelectionMode="Single"
+                                VerticalScrollBarVisibility="Always" >
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Span="3" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BackgroundColor="{StaticResource CustomColor}" Margin="5" HeightRequest="50" >
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="20,20,0,20" StrokeThickness="2" />
+                                </Border.StrokeShape>
+
+                                <StackLayout Orientation="Vertical" >
+                                    <Image Source="{Binding ., Converter={StaticResource ClassesToImageConverter}}" 
+                                           HeightRequest="30" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center" />
+                                    <Label Text="{Binding .}" 
+                                       VerticalTextAlignment="Center" 
+                                       HorizontalTextAlignment="Center" 
+                                       FontAttributes="Bold" />
+                                </StackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <Label Text="Charactéristiques" Grid.Row="5" VerticalOptions="Center"/>
+                <CollectionView ItemsSource="{Binding EditableChampionVm.Characteristics}"
+                                Grid.Row="5" Grid.Column="1"
+                                SelectedItem="{Binding SelectedCharacteristic}"
+                                HeightRequest="200"
+                                VerticalScrollBarVisibility="Always" ItemTemplate="{StaticResource CharacteristicViewTemplate}">
+                </CollectionView>
+                <HorizontalStackLayout Grid.Row="6" Grid.ColumnSpan="2" Spacing="15" HorizontalOptions="Center">
+                    <Entry WidthRequest="200" Text="{Binding Key}" IsEnabled="False" Margin="5"/>
+                    <Entry WidthRequest="100" Text="{Binding Value}" Keyboard="Numeric"/>
+                    <Button Text="+" Command="{Binding IncrementCommand}" HeightRequest="35" Padding="0" FontAttributes="Bold"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Grid.Row="7" Grid.ColumnSpan="2" HorizontalOptions="Center" Spacing="50" Margin="10">
+                    <Button Text="{Binding ButtonTitle}" Command="{Binding SaveCommand}" />
+                    <Button Text="Annuler" />
+                </HorizontalStackLayout>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

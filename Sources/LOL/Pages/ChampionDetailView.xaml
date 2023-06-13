@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:MVVM_Toolkit.ViewModels;assembly=MVVM_Toolkit"
+             xmlns:vmv="clr-namespace:LOL.VIewModels;assembly=LOL"
+             xmlns:components="clr-namespace:LOL.Components"
+             xmlns:converters="clr-namespace:MVVM_Toolkit.Converters;assembly=MVVM_Toolkit"
+             x:Class="LOL.Pages.ChampionDetailView"
+             Shell.NavBarIsVisible="False"
+             x:DataType="vmv:ChampionDetailViewModel">
+    <ContentPage.Resources>
+        <DataTemplate x:Key="SkillTemplate">
+            <components:SkillView/>
+        </DataTemplate>
+        <DataTemplate x:Key="CharacteristicTemplate">
+            <components:CaracteristicView StackOrientation="Vertical" KeyHorizontalAlignment="CenterAndExpand" ValueHorizontalAlignment="CenterAndExpand"/>
+        </DataTemplate>
+        <converters:Base64ToImageConverter x:Key="Base64ToImageConverter"/>
+        <converters:ClassesToImageConverter x:Key="ClassesToImageConverter"/>
+    </ContentPage.Resources>
+    <Grid IgnoreSafeArea="True" RowDefinitions="50,*">
+        <Grid ColumnDefinitions="100,*,100" IgnoreSafeArea="True" BackgroundColor="{StaticResource CustomColor}">
+            <Grid ColumnDefinitions="*,*" >
+                <ImageButton 
+                    Source="back.png" 
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Start"
+                    HeightRequest="25" Command="{Binding BackCommand}"/>
+                <Label 
+                    Text="Back"
+                    Grid.Column="1"
+                    VerticalOptions="Center"
+                    TextColor="White"
+                    HorizontalOptions="Start"/>
+            </Grid>
+            <Label 
+                Text="ChampionPage"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                FontSize="Large"
+                FontAttributes="Bold"
+                Grid.Column="1" TextColor="White"/>
+            <Button 
+                Text="Modifier" 
+                Grid.Column="2"  
+                x:Name="ActionButton"
+                TextColor="White"
+                BackgroundColor="Transparent"
+                HeightRequest="40" 
+                VerticalOptions="Center" 
+                Padding="0" 
+                Command="{Binding EditChampionCommand}" />
+        </Grid>
+        
+        <ScrollView  Grid.Row="1">
+            <VerticalStackLayout Padding="15">
+                <Image Source="{Binding ChampionVm.Image, Converter={StaticResource Base64ToImageConverter}}"/>
+                <StackLayout Orientation="Horizontal">
+                    <Label 
+                        Text="{Binding ChampionVm.Name}" 
+                        FontSize="Large" 
+                        FontAttributes="Bold" HorizontalOptions="StartAndExpand"/>
+                    <VerticalStackLayout HorizontalOptions="End" Margin="20">
+                        <Image Source="{Binding ChampionVm.Class, Converter={StaticResource ClassesToImageConverter}}" HeightRequest="50"/>
+                        <Label 
+                            Text="{Binding ChampionVm.Class}" 
+                            FontSize="Large"
+                            FontAttributes="Italic"/>
+                    </VerticalStackLayout>
+                </StackLayout>
+                <Label 
+                    Text="{Binding ChampionVm.Bio}" 
+                    FontSize="Medium"/>
+                <CollectionView 
+                    ItemsSource="{Binding ChampionVm.Characteristics}" 
+                    VerticalScrollBarVisibility="Always"
+                                ItemTemplate="{StaticResource CharacteristicTemplate}">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Span="3" Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+                </CollectionView>
+                <Label Text="Compétence"/>
+                <CollectionView ItemsSource="{Binding ChampionVm.Skills}" 
+                                ItemTemplate="{StaticResource SkillTemplate}">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical"
+                                           ItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
