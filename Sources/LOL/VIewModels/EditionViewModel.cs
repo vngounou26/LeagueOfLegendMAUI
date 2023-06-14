@@ -19,19 +19,11 @@ public partial class EditionViewModel: ObservableObject//INotifyPropertyChanged
         ChampionMgrVm = championMgr;
         _championVM= championVM;
         Classes = Enum.GetValues<ChampionClass>().Where(c => c != ChampionClass.Unknown).ToArray();
-        //PickImageCommand = new Command(async () => await PickImage());
-        //PickIconCommand = new Command(async () => await PickIcon());
-        //SaveCommand = new Command(async () => await SaveChampion());
-        //CancelCommand = new Command(async () => await Cancel());
-        //IncrementCommand = new Command(Increment);
         IsNew = editableChampionVm.IsNew;
         Title = IsNew ? "New Champion" : "Edit Champion";
         ButtonTitle = IsNew ? "Create" : "Update";
-        _key = IsNew ? Empty : EditableChampionVm.Characteristics.First().Key;
-        _value = IsNew ? 0 : EditableChampionVm.Characteristics.First().Value;
-
-        //key = IsNew ? Empty : EditableChampionVm.Characteristics.First().Key;
-        //value = IsNew ? 0 : EditableChampionVm.Characteristics.First().Value;
+        key = IsNew ? Empty : EditableChampionVm.Characteristics.First().Key;
+        value = IsNew ? 0 : EditableChampionVm.Characteristics.First().Value;
 
         PropertyChanged += EditionViewModel_PropertyChanged;
     }
@@ -70,32 +62,37 @@ public partial class EditionViewModel: ObservableObject//INotifyPropertyChanged
 
 
     private int _value;
-    public int Value
-    {
-        get => _value;
 
-        set
-        {
-            if (SelectedCharacteristic.Value == value) return;
+    [ObservableProperty]
+    private int value;
+    //public int Value
+    //{
+    //    get => _value;
 
-            _value = value;
-            SelectedCharacteristic = new KeyValuePair<string, int>(SelectedCharacteristic.Key, value);
+    //    set
+    //    {
+    //        if (SelectedCharacteristic.Value == value) return;
 
-            OnPropertyChanged();
-        }
-    }
+    //        _value = value;
+    //        SelectedCharacteristic = new KeyValuePair<string, int>(SelectedCharacteristic.Key, value);
+
+    //        OnPropertyChanged();
+    //    }
+    //}
 
     private string _key;
-    public string Key
-    {
-        get => _key;
-        set
-        {
-            if (SelectedCharacteristic.Key == value) return;
-            _key = value;
+    [ObservableProperty]
+    private string key;
+    //public string Key
+    //{
+    //    get => _key;
+    //    set
+    //    {
+    //        if (SelectedCharacteristic.Key == value) return;
+    //        _key = value;
 
-        }
-    }
+    //    }
+    //}
 
     private bool _isNew;
     public bool IsNew
@@ -112,11 +109,6 @@ public partial class EditionViewModel: ObservableObject//INotifyPropertyChanged
 
     public IEnumerable<ChampionClass> Classes { get; }
 
-    //public Command PickImageCommand { get; }
-    //public Command PickIconCommand { get; }
-    //public Command SaveCommand { get; }
-    //public Command IncrementCommand { get; }
-    //public Command CancelCommand { get; }
 
     [RelayCommand]
     private async Task PickImage()

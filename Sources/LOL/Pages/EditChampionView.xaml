@@ -81,12 +81,19 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
                 <Label Text="Charactéristiques" Grid.Row="5" VerticalOptions="Center"/>
-                <CollectionView ItemsSource="{Binding EditableChampionVm.Characteristics}"
+                <ListView ItemsSource="{Binding EditableChampionVm.Characteristics}"
                                 Grid.Row="5" Grid.Column="1"
                                 SelectedItem="{Binding SelectedCharacteristic}"
                                 HeightRequest="200"
-                                VerticalScrollBarVisibility="Always" ItemTemplate="{StaticResource CharacteristicViewTemplate}">
-                </CollectionView>
+                                VerticalScrollBarVisibility="Always">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <components:CaracteristicView />
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
                 <HorizontalStackLayout Grid.Row="6" Grid.ColumnSpan="2" Spacing="15" HorizontalOptions="Center">
                     <Entry WidthRequest="200" Text="{Binding Key}" IsEnabled="False" Margin="5"/>
                     <Entry WidthRequest="100" Text="{Binding Value}" Keyboard="Numeric"/>
