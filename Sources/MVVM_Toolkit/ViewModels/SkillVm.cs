@@ -16,12 +16,7 @@ public class SkillVm:ViewModelBase<Skill>
     public string Description
     {
         get => Model.Description;
-        set
-        {
-            if (Model.Description == value) return;
-            Model.Description = value;
-            OnPropertyChanged();
-        }
+        set=> SetProperty(Model.Description, value, Model, (model, val) => model.Description = val);
     }
     
     public SkillType Type

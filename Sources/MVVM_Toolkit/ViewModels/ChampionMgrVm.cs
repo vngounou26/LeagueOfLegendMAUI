@@ -1,7 +1,5 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows.Input;
+
 using Model;
 
 namespace MVVM_Toolkit.ViewModels;
@@ -12,14 +10,20 @@ public class ChampionMgrVm:ViewModelBase<IDataManager>
     {
         Champions = new ReadOnlyObservableCollection<ChampionVM>(_champions);
         LoadChampions(Page, PageSize).ConfigureAwait(false);
-        PropertyChanged += ChampionMgrVm_PropertyChanged;
     }
     
     private int _page = 1;
+
     public int Page
     {
         get => _page;
-        set=> SetProperty(ref _page, value);
+        set
+        {
+            if(SetProperty(ref _page, value))
+            {
+                LoadChampions(Page, PageSize).ConfigureAwait(false);
+            }
+        }
     }
     
     private int _pageSize = 5;
@@ -36,6 +40,7 @@ public class ChampionMgrVm:ViewModelBase<IDataManager>
 
     private  async Task LoadChampions(int page, int pageSize = 5)
     {
+        _champions.Clear();
         var champs = await Model.ChampionsMgr.GetItems(page-1, pageSize,nameof(Champion.Name));
         foreach (var champ in champs)
         {
@@ -60,14 +65,6 @@ public class ChampionMgrVm:ViewModelBase<IDataManager>
         }
     }
 
-    private async void ChampionMgrVm_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(Page))
-        {
-            _champions.Clear();
-           await LoadChampions(Page, PageSize);
-        }
-    }
     
     public IEnumerable<ChampionClass> AllClasses => Enum.GetValues<ChampionClass>();
     

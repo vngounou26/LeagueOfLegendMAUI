@@ -1,4 +1,6 @@
-﻿using LOL.Pages;
+﻿using CommunityToolkit.Mvvm.Input;
+
+using LOL.Pages;
 
 using Microsoft.Maui.Controls;
 
@@ -12,29 +14,26 @@ using System.Threading.Tasks;
 
 namespace LOL.VIewModels
 {
-    public class ChampionDetailViewModel
+    public partial class ChampionDetailViewModel
     {
         
         public ChampionDetailViewModel(ChampionMgrVm championMgr, ChampionVM championVm)
         {
             ChampionVm = championVm;
             ChampionMgrVm = championMgr;
-            EditChampionCommand = new Command(EditChampion);
-            BackCommand = new Command(Back);
         }
         public ChampionVM ChampionVm { get; }
         private ChampionMgrVm ChampionMgrVm { get; }
 
 
-        public Command EditChampionCommand { get; }
-        public Command BackCommand { get; }
 
-
+        [RelayCommand]
         private async void EditChampion()
         {
             await Shell.Current.Navigation.PushAsync(new EditChampionView(new EditionViewModel(ChampionMgrVm, new EditableChampionVM( ChampionVm), ChampionVm)));
         }
 
+        [RelayCommand]
         private void Back()
         {
             Shell.Current.Navigation.PopAsync();

@@ -1,16 +1,13 @@
-using Microsoft.Maui.Controls;
-
 using Model;
 using MVVM_Toolkit.ViewModels;
-
-using System;
 using static System.String;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace LOL.VIewModels;
 
-public class EditionViewModel:INotifyPropertyChanged
+public partial class EditionViewModel: ObservableObject//INotifyPropertyChanged
 {
     public EditableChampionVM EditableChampionVm { get; }
     private ChampionVM _championVM { get; }
@@ -22,16 +19,19 @@ public class EditionViewModel:INotifyPropertyChanged
         ChampionMgrVm = championMgr;
         _championVM= championVM;
         Classes = Enum.GetValues<ChampionClass>().Where(c => c != ChampionClass.Unknown).ToArray();
-        PickImageCommand = new Command(async () => await PickImage());
-        PickIconCommand = new Command(async () => await PickIcon());
-        SaveCommand = new Command(async () => await SaveChampion());
-        CancelCommand = new Command(async () => await Cancel());
-        IncrementCommand = new Command(Increment);
+        //PickImageCommand = new Command(async () => await PickImage());
+        //PickIconCommand = new Command(async () => await PickIcon());
+        //SaveCommand = new Command(async () => await SaveChampion());
+        //CancelCommand = new Command(async () => await Cancel());
+        //IncrementCommand = new Command(Increment);
         IsNew = editableChampionVm.IsNew;
         Title = IsNew ? "New Champion" : "Edit Champion";
         ButtonTitle = IsNew ? "Create" : "Update";
-        _key =IsNew ? Empty : EditableChampionVm.Characteristics.First().Key;
-        _value =IsNew?0 : EditableChampionVm.Characteristics.First().Value;
+        _key = IsNew ? Empty : EditableChampionVm.Characteristics.First().Key;
+        _value = IsNew ? 0 : EditableChampionVm.Characteristics.First().Value;
+
+        //key = IsNew ? Empty : EditableChampionVm.Characteristics.First().Key;
+        //value = IsNew ? 0 : EditableChampionVm.Characteristics.First().Value;
 
         PropertyChanged += EditionViewModel_PropertyChanged;
     }
@@ -44,29 +44,13 @@ public class EditionViewModel:INotifyPropertyChanged
         }
     }
 
-    private string _title=Empty;
-    public string Title
-    {
-        get => _title;
-        set
-        {
-            if (_title == value) return;
-            _title = value;
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    private string title=Empty;
     
-    private string _buttonTitle=Empty;
-    public string ButtonTitle
-    {
-        get => _buttonTitle;
-        set
-        {
-            if (_buttonTitle == value) return;
-            _buttonTitle = value;
-            OnPropertyChanged();
-        }
-    }
+
+    [ObservableProperty]
+    private string buttonTitle=Empty;
+    
 
     
 
@@ -93,10 +77,10 @@ public class EditionViewModel:INotifyPropertyChanged
         set
         {
             if (SelectedCharacteristic.Value == value) return;
-            
+
             _value = value;
             SelectedCharacteristic = new KeyValuePair<string, int>(SelectedCharacteristic.Key, value);
-            
+
             OnPropertyChanged();
         }
     }
@@ -109,7 +93,7 @@ public class EditionViewModel:INotifyPropertyChanged
         {
             if (SelectedCharacteristic.Key == value) return;
             _key = value;
-            OnPropertyChanged();
+
         }
     }
 
@@ -127,13 +111,14 @@ public class EditionViewModel:INotifyPropertyChanged
     
 
     public IEnumerable<ChampionClass> Classes { get; }
-    
-    public Command PickImageCommand { get; }
-    public Command PickIconCommand { get; }
-    public Command SaveCommand { get; }
-    public Command IncrementCommand { get; }
-    public Command CancelCommand { get; }
 
+    //public Command PickImageCommand { get; }
+    //public Command PickIconCommand { get; }
+    //public Command SaveCommand { get; }
+    //public Command IncrementCommand { get; }
+    //public Command CancelCommand { get; }
+
+    [RelayCommand]
     private async Task PickImage()
     {
         var result = await FilePicker.PickAsync(new PickOptions
@@ -150,6 +135,7 @@ public class EditionViewModel:INotifyPropertyChanged
         }
     }
 
+    [RelayCommand]
     private async Task PickIcon()
     {
         var result = await FilePicker.PickAsync(new PickOptions
@@ -166,6 +152,7 @@ public class EditionViewModel:INotifyPropertyChanged
         }
     }
 
+    [RelayCommand]
     private async Task SaveChampion()
     {
         
@@ -181,23 +168,25 @@ public class EditionViewModel:INotifyPropertyChanged
         }
     }
 
+    [RelayCommand]
     private async Task Cancel()
     {
         await Shell.Current.Navigation.PopAsync();
     }
 
+    [RelayCommand]
     private void Increment()
     {
         Value++;
     }
 
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+    //public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+    //protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    //{
+    //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    //}
 
     
 }

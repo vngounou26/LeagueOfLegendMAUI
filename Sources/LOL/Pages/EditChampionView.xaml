@@ -93,7 +93,7 @@
                     <Button Text="+" Command="{Binding IncrementCommand}" HeightRequest="35" Padding="0" FontAttributes="Bold"/>
                 </HorizontalStackLayout>
                 <HorizontalStackLayout Grid.Row="7" Grid.ColumnSpan="2" HorizontalOptions="Center" Spacing="50" Margin="10">
-                    <Button Text="{Binding ButtonTitle}" Command="{Binding SaveCommand}" />
+                    <Button Text="{Binding ButtonTitle}" Command="{Binding SaveChampionCommand}" />
                     <Button Text="Annuler" />
                 </HorizontalStackLayout>
             </Grid>
